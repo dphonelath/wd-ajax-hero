@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  const movies = [];
+  let movies = [];
 
   const renderMovies = function() {
     $('#listings').empty();
@@ -14,16 +14,16 @@
 
       $title.attr({
         'data-position': 'top',
-        'data-tooltip': movie.title
+        'data-tooltip': movie.Title
       });
 
-      $title.tooltip({ delay: 50 }).text(movie.title);
+      $title.tooltip({ delay: 50 }).text(movie.Title);
 
       const $poster = $('<img>').addClass('poster');
 
       $poster.attr({
-        src: movie.poster,
-        alt: `${movie.poster} Poster`
+        src: movie.Poster,
+        alt: `${movie.Poster} Poster`
       });
 
       $content.append($title, $poster);
@@ -57,4 +57,38 @@
   };
 
   // ADD YOUR CODE HERE
+  // - Listen for submissions on the search form. Remember to prevent the default action.
+  // - Validate the user input is not blank.
+  // - Clear the previous search results.
+  // - Send an HTTP request to the [OMDB API](http://omdbapi.com/) search endpoint.
+  //   - The API requires a key so you will need to send requests to this url instead:
+  //     - https://omdb-api.now.sh/
+  //     - Example: https://omdb-api.now.sh/?s=star%20wars
+  // - Handle the HTTP response by pushing a new, well-formed `movie` object into the global `movies` array.
+  // - Render the `movies` array to the page by calling the `renderMovies()` function with no arguments.
+
+  let button = document.querySelector("button");
+  let form = document.querySelector("form");
+  let input = document.querySelector("input");
+
+  
+
+  button.addEventListener("click", function(event){
+    event.preventDefault();
+    let sValue = input.value;
+    fetch('https://omdb-api.now.sh/?s=' + sValue)
+      .then((response) => response.json())
+      .then((response)=> {
+        if (input.value == ""){
+          alert ("Please input a search.")
+        }else{ 
+          for(let i = 0; i < response.Search.length; i++){
+            movies.push(response.Search[i]);
+          }
+        }
+        renderMovies();
+        movies= []
+      })   
+    })
+
 })();
